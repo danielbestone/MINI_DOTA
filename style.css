@@ -1,0 +1,335 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+    padding-top: 20px;
+    overflow: hidden;
+}
+
+#game-container {
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Header */
+#game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #252525;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
+
+.team-info {
+    flex: 1;
+    padding: 10px;
+}
+
+.team-info h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5em;
+}
+
+.player-info {
+    text-align: left;
+    color: #6a8dff;
+}
+
+.enemy-info {
+    text-align: right;
+    color: #ff6a6a;
+}
+
+.team-info p {
+    margin: 5px 0;
+}
+
+.team-info button {
+    padding: 5px 10px;
+    border: 1px solid #666;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#message-el {
+    flex: 2;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ffcc00;
+    min-height: 30px;
+}
+
+/* Game World */
+#game-world {
+    position: relative;
+    width: 1200px;
+    height: 250px;
+    background-color: #5a8d37;
+    /* Grassy color */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, transparent 20%, transparent 80%, rgba(0, 0, 0, 0.1) 100%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, transparent 5%, transparent 95%, rgba(0, 0, 0, 0.1) 100%);
+    border: 3px solid #333;
+    overflow: hidden;
+}
+
+/* Units */
+.unit {
+    position: absolute;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s linear;
+}
+
+.hero {
+    width: 40px;
+    height: 40px;
+    font-weight: bold;
+    border: 3px solid gold;
+    z-index: 10;
+}
+
+.minion {
+    width: 25px;
+    height: 25px;
+    border: 2px solid #333;
+    z-index: 5;
+}
+
+.player-team {
+    background-color: #007bff;
+}
+
+.enemy-team {
+    background-color: #dc3545;
+}
+
+.dead {
+    display: none !important;
+}
+
+/* Towers */
+.tower {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 80px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    border-radius: 5px;
+    /* Background image handled by JS */
+}
+
+#player-tower {
+    left: 270px;
+}
+
+#enemy-tower {
+    left: 870px;
+}
+
+/* Health Bar */
+.health-bar-container {
+    position: absolute;
+    bottom: 110%;
+    left: -10%;
+    width: 120%;
+    height: 8px;
+    background-color: #333;
+    border: 1px solid #111;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.health-bar {
+    height: 100%;
+    width: 100%;
+    background-color: #28a745;
+    /* Green */
+    transition: width 0.2s ease-in-out;
+}
+
+/* Stats Panel */
+#player-hero-stats-container {
+    background-color: #252525;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
+
+#player-hero-stats {
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-wrap;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Modals (Hero Select & Shop) */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: #2a2a2a;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #ffcc00;
+    width: 800px;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+#heroes-container,
+#items-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.hero-card,
+.item {
+    background-color: #444;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #666;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.hero-card:hover,
+.item:hover {
+    background-color: #555;
+    transform: translateY(-5px);
+}
+
+.hero-card h4,
+.item h4 {
+    margin: 0 0 10px 0;
+    color: #ffcc00;
+}
+
+.hero-card p,
+.item p {
+    margin: 3px 0;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #333;
+}
+
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#close-shop-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffcc00;
+    color: #1a1a1a;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+/* Attack Effects */
+.attack-effect {
+    position: absolute;
+    z-index: 20;
+    pointer-events: none;
+    transform-origin: center;
+}
+
+.slash-effect {
+    width: 50px;
+    height: 50px;
+    border-top: 3px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: slash-anim 0.3s ease-out forwards;
+}
+
+@keyframes slash-anim {
+    0% {
+        transform: translateX(-25px) translateY(-50%) rotate(-45deg) scale(0.8);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-25px) translateY(-50%) rotate(45deg) scale(1.3);
+        opacity: 0;
+    }
+}
+
+.bullet-effect {
+    width: 10px;
+    height: 4px;
+    background-color: #ffeb3b;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #ffeb3b;
+    transition: transform 0.2s linear;
+}
+
+.explosion-effect {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(255, 255, 150, 1) 0%, rgba(255, 165, 0, 1) 50%, rgba(255, 100, 0, 0) 70%);
+    border-radius: 50%;
+    animation: explosion-anim 0.4s ease-out forwards;
+}
+
+@keyframes explosion-anim {
+    from {
+        transform: translateY(-50%) scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(-50%) scale(1);
+        opacity: 0;
+    }
+}
+
+.damage-text {
+    position: absolute;
+    z-index: 40;
+    pointer-events: none;
+    font-weight: bold;
+    color: #ffeb3b;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+    opacity: 1;
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
