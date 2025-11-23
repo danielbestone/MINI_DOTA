@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Dota - 大廳</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="frontend.css">
+    <style>
+        /* Lobby specific styles */
+        .lobby-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .lobby-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .lobby-header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .lobby-header p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+        }
+
+        .lobby-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .lobby-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .lobby-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 255, 255, 0.5);
+        }
+
+        .lobby-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #00d2ff;
+        }
+
+        .lobby-card p {
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        .lobby-card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+            color: #fff;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info span {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff6b81;
+        }
+
+        /* Modal styles for placeholders */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #00d2ff;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+        }
+    </style>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="user-info">
+        <span id="username-display">玩家</span>
+        <button id="logout-btn" class="logout-btn">登出</button>
+    </div>
+
+    <div class="lobby-container">
+        <div class="lobby-header">
+            <h1>Mini Dota 大廳</h1>
+            <p>準備好迎接戰鬥了嗎？</p>
+        </div>
+
+        <div class="lobby-menu">
+            <div class="lobby-card" id="btn-battle">
+                <i class="fas fa-fist-raised"></i>
+                <h3>戰鬥</h3>
+                <p>選擇關卡，開始對戰。</p>
+            </div>
+            <div class="lobby-card" id="btn-achievements">
+                <i class="fas fa-trophy"></i>
+                <h3>成就系統</h3>
+                <p>查看你的榮耀時刻與解鎖獎勵。</p>
+            </div>
+            <div class="lobby-card" id="btn-equipment">
+                <i class="fas fa-gem"></i>
+                <h3>裝備 & 抽卡</h3>
+                <p>調整裝備、抽取稀有角色與道具！</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placeholder Modal -->
+    <div id="placeholder-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">標題</h2>
+            <p id="modal-message">功能開發中...</p>
+        </div>
+    </div>
+
+    <!-- Achievements Modal (Reusing structure or creating new if needed, but for now placeholder/simple list) -->
+    <div id="achievements-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px; text-align: left;">
+            <span class="close-modal" id="close-achievements">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">成就列表</h2>
+            <div id="achievements-list" style="max-height: 400px; overflow-y: auto;">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="lobby.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+        const startX = getUnitCenterX(target) - (textWidth / 2);
+        const startY = (gameWorld.offsetHeight / 2) - unitHeight - 10;
+
+        textEl.style.left = `${startX}px`;
+        textEl.style.top = `${startY}px`;
+        textEl.style.transform = 'translateY(0)';
+
+        requestAnimationFrame(() => {
+            textEl.style.transform = `translateY(-30px)`;
+            textEl.style.opacity = '0';
+        });
+
+        setTimeout(() => textEl.remove(), 600);
+    }
+
+    function showShop() {
+        const itemsContainer = document.getElementById('items-container');
+        itemsContainer.innerHTML = '';
+
+        const sortedKeys = Object.keys(ITEMS).sort((a, b) => {
+            const typeOrder = { 'attack': 1, 'magic': 2, 'defense': 3, 'special': 4 };
+            const typeA = ITEMS[a].type || 'special';
+            const typeB = ITEMS[b].type || 'special';
+            if (typeOrder[typeA] !== typeOrder[typeB]) {
+                return typeOrder[typeA] - typeOrder[typeB];
+            }
+            return 0;
+        });
+
+        for (const key of sortedKeys) {
+            const item = ITEMS[key];
+            const canAfford = gameState.player.gold >= item.cost;
+            const itemEl = document.createElement('div');
+            itemEl.className = `item${canAfford ? '' : ' disabled'}`;
+            itemEl.innerHTML = `
+                <h4>${item.name}</h4>
+                <p class="item-desc">${item.description}</p>
+                <p>???${item.cost} ??</p>
+            `;
+            if (canAfford) {
+                itemEl.onclick = () => buyItem(item);
+            }
+            itemsContainer.appendChild(itemEl);
+        }
+        shopModal.classList.remove('hidden');
+    }
+
+    function hideShop() {
+        if (!shopModal) return;
+        shopModal.classList.add('hidden');
+    }
+
+    function buyItem(item) {
+        if (gameState.player.gold >= item.cost) {
+            gameState.player.gold -= item.cost;
+            gameState.player.hero.equipItem(item);
+            if (item.effects.buffMinions) {
+                gameState.units.filter(u => u.team === gameState.playerTeam && !u.isHero).forEach(minion => minion.recalculateStats());
+            }
+            updateUI();
+            hideShop();
+        }
+    }
+
+    function aiBuyItem(aiPlayer) {
+        if (aiPlayer.gold < 100) return;
+
+        const hero = aiPlayer.hero;
+        const playerHero = gameState.player.hero;
+        let chosenItem = null;
+
+        if (playerHero.item && playerHero.item.effects.evasion && ITEMS.scope16x) {
+            chosenItem = ITEMS.scope16x;
+        } else if (hero.unitKey === 'assassin' && ITEMS.flyingShoes) {
+            chosenItem = ITEMS.flyingShoes;
+        } else if (hero.currentStats.type === 'magical' && ITEMS.elderWand) {
+            chosenItem = ITEMS.elderWand;
+        } else if (hero.unitKey === 'samurai' && ITEMS.dragonSword) {
+            chosenItem = ITEMS.dragonSword;
+        } else if (playerHero.currentStats.agi > 100 && ITEMS.dreamCatcher) {
+            chosenItem = ITEMS.dreamCatcher;
+        }
+
+        if (hero.item && chosenItem && hero.item.name === chosenItem.name) {
+            return;
+        }
+
+        let currentGold = aiPlayer.gold;
+        if (hero.item) {
+            currentGold += Math.floor(hero.item.cost / 2);
+        }
+
+        if (chosenItem && currentGold >= chosenItem.cost) {
+            if (hero.item) {
+                aiPlayer.gold += Math.floor(hero.item.cost / 2);
+                hero.item = null;
+            }
+
+            aiPlayer.gold -= chosenItem.cost;
+            hero.equipItem(chosenItem);
+        }
+    }
+
+    function showHeroSelection() {
+        const heroesContainer = document.getElementById('heroes-container');
+        heroesContainer.innerHTML = '';
+        for (const key in HEROES) {
+            const hero = HEROES[key];
+            const heroCard = document.createElement('div');
+            heroCard.className = 'hero-card';
+
+            
+            const statsText = `
+                <p>\u751f\u547d: ${hero.stats.hp} / \u9b54\u529b: ${hero.stats.mp}</p>
+                <p>\u7269\u653b: ${hero.stats.att} / \u6cd5\u653b: ${hero.stats.matt}</p>
+                <p>\u7269\u9632: ${hero.stats.def} / \u6cd5\u9632: ${hero.stats.mdef}</p>
+                <p>\u8ddd\u96e2: ${hero.stats.range} / \u654f\u6377: ${hero.stats.agi}</p>
+            `;
+
+            heroCard.innerHTML = `
+                <h4>${hero.name}</h4>
+                <p class="hero-desc">${hero.description}</p>
+                <div class="hero-stats">${statsText}</div>
+            `;
+            heroCard.onclick = () => selectHero(key);
+            heroesContainer.appendChild(heroCard);
+        }
+        heroSelectionModal.classList.remove('hidden');
+        messageEl.textContent = '\u8acb\u9078\u64c7\u82f1\u96c4\u958b\u59cb';
+    }
+
+    function selectHero(playerHeroKey) {
+        const heroKeys = Object.keys(HEROES);
+        const availableAiHeroes = heroKeys.filter(key => key !== playerHeroKey);
+        const aiHeroKey = availableAiHeroes[Math.floor(Math.random() * availableAiHeroes.length)];
+
+        initGame(playerHeroKey, aiHeroKey);
+        heroSelectionModal.classList.add('hidden');
+    }
+
+    // --- Game Logic ---
+    function spawnMinion(team) {
+        const minion = new Unit(team, MINION_STATS, false);
+        minion.recalculateStats();
+        gameState.units.push(minion);
+    }
+
+    function spawnEscortMinions(team, hero) {
+        const direction = (team === gameState.playerTeam) ? 1 : -1;
+        const spacing = 60;

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOTA - 傳奇對決</title>
+    <link rel="stylesheet" href="frontend.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">DOTA</div>
+                <ul class="nav-links">
+                    <li><a href="auth.html">登入</a></li>
+                    <li><a href="auth.html" class="btn btn-outline" style="padding: 8px 20px; font-size: 0.9em;">註冊</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>主宰戰場<br>成為傳奇</h1>
+            <p>體驗最極致的 MOBA 網頁遊戲。策略、操作、榮耀，盡在指尖。</p>
+            <a href="auth.html" class="btn btn-primary">立即開始</a>
+        </div>
+    </section>
+
+    <script>
+        // Simple check to see if user is already logged in
+        const user = localStorage.getItem('dota_user');
+        if (user) {
+            const heroBtn = document.querySelector('.btn-primary');
+            heroBtn.textContent = '回到遊戲';
+            heroBtn.href = 'lobby.html';
+
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.innerHTML = `<li><span style="color: #aaa; margin-right: 15px;">歡迎, ${JSON.parse(user).username}</span></li>
+                                  <li><a href="#" onclick="logout()" class="btn btn-outline" style="padding: 8px 20px; font-size: 0.9em;">登出</a></li>`;
+        }
+
+        function logout() {
+            localStorage.removeItem('dota_user');
+            window.location.reload();
+        }
+    </script>
+
+</body>
+
+</html>

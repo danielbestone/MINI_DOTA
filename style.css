@@ -15,7 +15,8 @@ body {
     width: 1200px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+    /* Reduced gap */
 }
 
 /* Header */
@@ -24,19 +25,25 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #252525;
-    padding: 10px 20px;
+    padding: 5px 15px;
+    /* Compact padding */
     border-radius: 8px;
     border: 1px solid #444;
+    min-height: 60px;
 }
 
 .team-info {
     flex: 1;
-    padding: 10px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .team-info h2 {
-    margin: 0 0 10px 0;
-    font-size: 1.5em;
+    margin: 0;
+    font-size: 1.2em;
+    margin-bottom: 5px;
 }
 
 .player-info {
@@ -49,26 +56,54 @@ body {
     color: #ff6a6a;
 }
 
-.team-info p {
-    margin: 5px 0;
+.header-stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+
+.header-stat {
+    background-color: #333;
+    padding: 4px;
+    border-radius: 4px;
+    text-align: center;
+    border: 1px solid #555;
+}
+
+.header-stat .stat-label {
+    display: block;
+    font-size: 0.7em;
+    color: #aaa;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.header-stat .stat-value {
+    display: block;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
 }
 
 .team-info button {
-    padding: 5px 10px;
+    padding: 4px 8px;
     border: 1px solid #666;
     background-color: #333;
     color: #fff;
     cursor: pointer;
     border-radius: 4px;
+    font-size: 0.9em;
+    margin-top: 5px;
+    width: 100%;
 }
 
 #message-el {
     flex: 2;
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.4em;
     font-weight: bold;
     color: #ffcc00;
-    min-height: 30px;
 }
 
 /* Game World */
@@ -105,6 +140,13 @@ body {
     height: 25px;
     border: 2px solid #333;
     z-index: 5;
+}
+
+.ogre {
+    width: 80px;
+    height: 80px;
+    border: 3px solid darkred;
+    z-index: 9;
 }
 
 .player-team {
@@ -164,16 +206,44 @@ body {
 /* Stats Panel */
 #player-hero-stats-container {
     background-color: #252525;
-    padding: 15px;
+    padding: 10px;
     border-radius: 8px;
     border: 1px solid #444;
 }
 
-#player-hero-stats {
-    font-family: 'Courier New', Courier, monospace;
-    white-space: pre-wrap;
-    margin: 0;
-    line-height: 1.6;
+#player-hero-stats-container h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1em;
+    color: #ddd;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    /* 6 columns as requested */
+    gap: 8px;
+}
+
+.stat-item {
+    background-color: #333;
+    padding: 6px;
+    border-radius: 4px;
+    text-align: center;
+    border: 1px solid #555;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75em;
+    color: #aaa;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
 }
 
 /* Modals (Hero Select & Shop) */
@@ -224,6 +294,17 @@ body {
     border: 1px solid #666;
     transition: background-color 0.2s, transform 0.2s;
 }
+
+.hero-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hero-main-content {
+    flex-grow: 1;
+}
+
 
 .hero-card:hover,
 .item:hover {
@@ -332,4 +413,282 @@ body {
     text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
     opacity: 1;
     transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+/* Instructions Modal Styles */
+.instructions-list {
+    text-align: left;
+    margin: 20px 0;
+    padding: 0 20px;
+}
+
+.instructions-list p {
+    margin: 10px 0;
+    font-size: 1.1em;
+    color: #e0e0e0;
+}
+
+.confirm-btn {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 20px;
+}
+
+.confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+/* Achievement Notifier */
+#achievement-notifier {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.achievement-popup {
+    background-color: #2a2a2a;
+    color: #ffcc00;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 2px solid #ffcc00;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.achievement-popup h4 {
+    margin: 0 0 5px 0;
+}
+
+.achievement-popup p {
+    margin: 0;
+    color: #f0f0f0;
+    font-size: 0.9em;
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+}
+
+/* Achievement View Button */
+#achievement-view-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 50;
+}
+
+#view-achievements-btn, #close-achievements-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffcc00;
+    color: #1a1a1a;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    transition: background-color 0.2s;
+}
+
+#view-achievements-btn:hover, #close-achievements-btn:hover {
+    background-color: #ffd633;
+}
+
+/* Achievements Modal */
+#achievements-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.achievement-item {
+    background-color: #444;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 5px solid #666;
+    opacity: 0.6;
+    transition: all 0.3s;
+}
+
+.achievement-item.unlocked {
+    border-left-color: #ffcc00;
+    opacity: 1;
+}
+
+.achievement-item h4 {
+    margin: 0 0 5px 0;
+    color: #ddd;
+}
+
+.achievement-item.unlocked h4 {
+    color: #ffcc00;
+}
+
+.achievement-item p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+/* Skin Selector */
+.skin-selector {
+    position: relative;
+    margin-top: 10px;
+}
+
+.skin-btn {
+    width: 100%;
+    padding: 8px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.skin-options {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background-color: #333;
+    border: 1px solid #666;
+    border-radius: 4px;
+    z-index: 10;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.skin-options.hidden {
+    display: none;
+}
+
+.skin-option {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #555;
+}
+
+.skin-option:last-child {
+    border-bottom: none;
+}
+
+.skin-option:hover {
+    background-color: #555;
+}
+
+#healing-spring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 150px;
+    background: url('pict/溫泉.jpg') no-repeat center center;
+    background-size: cover;
+    border-radius: 50%;
+    opacity: 0.5;
+    z-index: 1; /* Below units */
+}
+
+/* --- Skills UI --- */
+.skills-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 4px;
+}
+
+.skill-btn {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #777;
+    background-color: #555;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.8em;
+    text-align: center;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.skill-btn:hover {
+    background-color: #666;
+}
+
+.skill-btn.on-cooldown {
+    background-color: #222;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.skill-cooldown-text {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #ffc107;
+}
+
+
+/* --- Buff/Aura Effects --- */
+.unit.has-aura::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 3px solid #00d9ff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00d9ff, inset 0 0 10px #00d9ff;
+    animation: pulse-aura 2s infinite ease-in-out;
+    z-index: -1; /* Behind the unit image */
+}
+
+@keyframes pulse-aura {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
 }
